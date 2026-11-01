@@ -189,3 +189,23 @@ using (bucket_id = 'retailer-pdfs' and public.is_admin());
 
 -- After creating your own account, promote that account to admin in SQL Editor:
 -- update public.profiles set role='admin' where id='YOUR_AUTH_USER_UUID';
+
+
+-- Customer can read only PDF files linked to their own approved order.
+drop policy if exists "customer read own approved PDFs" on storage.objects;
+create policy "customer read own approved PDFs" on storage.objects for select to authenticated
+using (
+  bucket_id = 'retailer-pdfs'
+  and exists (
+    select 1 from public.orders o
+    where o.pdf_path = name
+      and o.customer_id = auth.uid()
+      and o.status = 'approved'
+  )
+);
+
+-- Lock down RPC execution to signed-in users.
+revoke all on function public.place_order(uuid) from public, anon;
+grant execute on function public.place_order(uuid) to authenticated;
+revoke all on function public.admin_set_order_status(uuid,text,text,text) from public, anon;
+grant execute on function public.admin_set_order_status(uuid,text,text,text) to authenticated;
