@@ -1,61 +1,72 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel | MIRDDA TELICOM</title>
+<!doctype html>
+<html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MIRDDA TELICOM Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--navy:#102a43;--blue:#1769aa;--cyan:#20b8c5;--bg:#f3f7fb;--ink:#183247;--muted:#6b7d8d;--line:#e4ebf1}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:'Hind Siliguri',sans-serif;color:var(--ink)}
-header{background:linear-gradient(120deg,var(--navy),var(--blue));color:#fff;padding:18px 4%;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-.brand{font-size:22px;font-weight:700}.brand small{display:block;font-size:12px;font-weight:400;color:#d8efff}
-header a{color:#fff;text-decoration:none;border:1px solid #ffffff70;padding:8px 13px;border-radius:8px}
-.layout{display:grid;grid-template-columns:225px 1fr;min-height:calc(100vh - 70px)}
-aside{background:#fff;border-right:1px solid var(--line);padding:22px 14px}
-aside h3{font-size:13px;color:var(--muted);margin:4px 12px 12px}
-.nav a{display:block;padding:11px 13px;margin:4px 0;border-radius:9px;text-decoration:none;color:var(--ink);font-weight:500}
-.nav a.active,.nav a:hover{background:#eaf5fb;color:var(--blue)}
-main{padding:26px 3.5%;max-width:1400px;width:100%;margin:auto}
-.topline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
-h1{font-size:28px;margin:0;color:var(--navy)}.muted{color:var(--muted);margin:4px 0 0}
-.notice{background:#fff8e7;border:1px solid #f2d79a;color:#765312;padding:13px 16px;border-radius:10px;margin:0 0 20px;line-height:1.55}
-.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}
-.card,.panel{background:#fff;border:1px solid var(--line);border-radius:13px;padding:18px;box-shadow:0 4px 16px #18324708}
-.card span{font-size:13px;color:var(--muted)}.card strong{display:block;font-size:28px;color:var(--navy);margin-top:5px}
-.panel{margin-bottom:18px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:13px}
-h2{font-size:19px;margin:0;color:var(--navy)}
-.btn{border:0;border-radius:8px;padding:9px 14px;background:var(--blue);color:#fff;font:600 14px 'Hind Siliguri';cursor:not-allowed;opacity:.55}
-table{width:100%;border-collapse:collapse;min-width:650px}th,td{text-align:left;padding:12px 11px;border-bottom:1px solid var(--line);font-size:14px}th{background:#f5f8fb;color:#526678;font-weight:600}tr:last-child td{border-bottom:0}
-.table-wrap{overflow:auto}.status{display:inline-block;padding:4px 9px;border-radius:30px;font-size:12px;font-weight:600}.pending{background:#fff2d7;color:#946200}.approved{background:#e1f6eb;color:#147343}
-.grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}.field{margin:10px 0}.field label{display:block;font-size:14px;margin-bottom:5px;color:#53687a}.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #d8e2ea;border-radius:8px;font:14px 'Hind Siliguri';background:#fafcfe}.small{font-size:13px;color:var(--muted);line-height:1.6}
-footer{text-align:center;color:var(--muted);padding:18px;font-size:13px}
-@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
-@media(max-width:650px){.layout{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid var(--line);padding:9px}.nav{display:flex;overflow:auto}.nav a{white-space:nowrap}.layout{min-height:auto}main{padding:20px 4%}.cards{gap:9px}.card{padding:13px}.card strong{font-size:23px}h1{font-size:24px}}
-</style>
-</head>
-<body>
-<header><div class="brand">MIRDDA TELICOM <small>Retailer Portal · Admin Dashboard</small></div><a href="index.html">← মূল Website</a></header>
-<div class="layout">
-<aside><h3>ADMIN MENU</h3><nav class="nav"><a class="active" href="#dashboard">ড্যাশবোর্ড</a><a href="#orders">অর্ডার ম্যানেজমেন্ট</a><a href="#customers">Retailer / Customer</a><a href="#wallet">Wallet Transactions</a><a href="#upload">PDF Upload</a><a href="#settings">সেটিংস</a></nav></aside>
-<main>
-<div class="topline"><div><h1 id="dashboard">Admin Dashboard</h1><p class="muted">MIRDDA TELICOM — Portal Management</p></div><span class="status pending">Backend সংযোগ বাকি</span></div>
-<div class="notice"><strong>সেটআপের অবস্থা:</strong> এটি Admin Panel-এর প্রাথমিক UI Preview। এখনো Login Authentication, Database, Wallet debit/credit, PDF Storage বা Approve/Reject চালু করা হয়নি। Backend যুক্ত ও নিরাপত্তা পরীক্ষা না হওয়া পর্যন্ত এখানে কোনো বাস্তব Customer তথ্য বা PDF আপলোড করবেন না।</div>
-<div class="cards">
-<div class="card"><span>মোট Retailer</span><strong>—</strong></div>
-<div class="card"><span>আজকের Order</span><strong>—</strong></div>
-<div class="card"><span>Pending Order</span><strong>—</strong></div>
-<div class="card"><span>Wallet Top-up Request</span><strong>—</strong></div>
+*{box-sizing:border-box}body{margin:0;background:#f2f6fa;color:#193247;font-family:'Hind Siliguri',sans-serif}header{background:linear-gradient(120deg,#102a43,#1769aa);color:white;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.brand{font-size:22px;font-weight:700}.brand small{display:block;font-size:12px;font-weight:400;color:#d5eafa}a{color:#1769aa}.wrap{max-width:1200px;margin:auto;padding:24px 4%}.panel{background:white;border:1px solid #e0e8ef;border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 5px 20px #19324708}.hidden{display:none!important}h1{margin:0 0 5px;color:#102a43}h2{margin:0 0 14px;font-size:20px;color:#102a43}.muted{color:#6b7d8d;font-size:14px}.notice{background:#fff5dd;border:1px solid #f1d99b;border-radius:9px;padding:12px;margin:12px 0;line-height:1.5}.row{display:flex;gap:12px;flex-wrap:wrap;align-items:end}.field{flex:1;min-width:180px;margin:8px 0}.field label{display:block;font-size:14px;margin-bottom:5px}.field input{width:100%;padding:11px;border:1px solid #d6e0e8;border-radius:8px;font:14px inherit}.field input[type=file]{padding:7px}.btn{border:0;background:#1769aa;color:white;padding:10px 15px;border-radius:8px;font:600 14px 'Hind Siliguri';cursor:pointer}.btn.secondary{background:#eaf2f8;color:#174d78}.btn.danger{background:#a93232}.btn:disabled{opacity:.5;cursor:wait}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.tabs button{background:#e7eef4;color:#29485f}.tabs button.active{background:#1769aa;color:#fff}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:760px}th,td{text-align:left;padding:11px;border-bottom:1px solid #e8edf2;font-size:14px;vertical-align:middle}th{background:#f5f8fb;color:#52697c}.pill{display:inline-block;border-radius:30px;padding:3px 9px;font-size:12px;font-weight:700}.pending{background:#fff1d1;color:#8a5a00}.approved{background:#dff4e8;color:#146c3d}.rejected{background:#fde5e5;color:#9b2929}.orderactions{min-width:210px}.orderactions input{max-width:190px;font-size:12px;margin-bottom:6px}.msg{margin-top:12px;font-size:14px;white-space:pre-wrap}.ok{color:#137545}.err{color:#a93232}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stat{background:#f5f9fc;border-radius:10px;padding:14px}.stat strong{font-size:24px;display:block;color:#102a43}@media(max-width:650px){.stats{grid-template-columns:1fr 1fr}.wrap{padding:16px 3%}.panel{padding:15px}}
+</style></head><body>
+<header><div class="brand">MIRDDA TELICOM <small>Retailer Portal · Secure Admin</small></div><a href="index.html" style="color:white">মূল Website</a></header>
+<div class="wrap">
+<div id="config" class="panel"><h1>প্রথমবার Supabase সংযোগ</h1><p class="muted">Supabase Project URL এবং anon/public key বসান। এগুলো public client config; কখনো service_role key দেবেন না।</p>
+<div class="row"><div class="field"><label>Supabase Project URL</label><input id="sburl" placeholder="https://xxxx.supabase.co"></div><div class="field"><label>Supabase anon / publishable key</label><input id="sbkey" placeholder="sb_publishable_... অথবা anon key"></div></div>
+<button class="btn" id="saveconfig">সংযোগ করুন</button><div id="configmsg" class="msg"></div></div>
+<div id="login" class="panel hidden"><h1>Admin Login</h1><p class="muted">শুধু অনুমোদিত Admin অ্যাকাউন্ট ব্যবহার করুন।</p><div class="row"><div class="field"><label>Email</label><input id="email" type="email" autocomplete="username"></div><div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password"></div></div><button class="btn" id="loginbtn">Login</button><div id="loginmsg" class="msg"></div></div>
+<div id="app" class="hidden">
+<div class="row" style="justify-content:space-between"><div><h1>Admin Dashboard</h1><div class="muted" id="adminemail"></div></div><button class="btn secondary" id="logout">Logout</button></div>
+<div class="notice">নিরাপত্তা: এই প্যানেল Supabase Authentication ও Row-Level Security ব্যবহার করে। Customer PDF private bucket-এ রাখা হয়। Approval-এর আগে PDF সঠিক Customer-এর অর্ডারের কি না যাচাই করুন।</div>
+<div class="stats"><div class="stat"><span class="muted">মোট Retailer</span><strong id="nretailers">—</strong></div><div class="stat"><span class="muted">মোট Order</span><strong id="norders">—</strong></div><div class="stat"><span class="muted">Pending Order</span><strong id="npending">—</strong></div></div>
+<div class="tabs"><button class="btn active" data-tab="orders">Orders</button><button class="btn" data-tab="retailers">Retailers</button><button class="btn" data-tab="services">Services</button></div>
+<section id="tab-orders" class="panel"><div class="row" style="justify-content:space-between"><h2>Order Management</h2><button class="btn secondary" id="refreshorders">Refresh</button></div><div class="tablewrap"><table><thead><tr><th>Order</th><th>Retailer</th><th>Service</th><th>Amount</th><th>Status</th><th>তারিখ</th><th>PDF / Action</th></tr></thead><tbody id="orderrows"><tr><td colspan="7">Loading…</td></tr></tbody></table></div></section>
+<section id="tab-retailers" class="panel hidden"><div class="row" style="justify-content:space-between"><h2>Retailer & Wallet</h2><button class="btn secondary" id="refreshretailers">Refresh</button></div><div class="tablewrap"><table><thead><tr><th>Retailer ID</th><th>নাম</th><th>Phone</th><th>Wallet Balance</th><th>Joined</th></tr></thead><tbody id="retailerrows"></tbody></table></div><p class="muted">Wallet Credit শুধুমাত্র যাচাইকৃত Payment Gateway webhook-এর মাধ্যমে server-side করতে হবে। এই Admin Panel থেকে সরাসরি ব্যালেন্স বাড়ানোর অপশন রাখা হয়নি।</p></section>
+<section id="tab-services" class="panel hidden"><h2>Service List</h2><div class="row"><div class="field"><label>Service Name</label><input id="servicename" placeholder="যেমন: Voter Card PDF"></div><div class="field"><label>Price (₹)</label><input id="serviceprice" type="number" min="1" step=".01" placeholder="30"></div><button class="btn" id="addservice">Add Service</button></div><div class="tablewrap"><table><thead><tr><th>Service</th><th>Price</th><th>Status</th></tr></thead><tbody id="servicerows"></tbody></table></div></section>
+<div id="appmsg" class="msg"></div></div>
 </div>
-<section class="panel" id="orders"><div class="panel-head"><h2>সাম্প্রতিক PDF Orders</h2><button class="btn" disabled>সব Order দেখুন</button></div><div class="table-wrap"><table><thead><tr><th>Order ID</th><th>Retailer ID</th><th>Service</th><th>Amount</th><th>তারিখ</th><th>Status</th><th>Action</th></tr></thead><tbody><tr><td colspan="7" style="text-align:center;color:#718294;padding:24px">Backend যুক্ত হলে এখানে বাস্তব Order দেখা যাবে।</td></tr></tbody></table></div></section>
-<div class="grid2">
-<section class="panel" id="upload"><div class="panel-head"><h2>PDF Upload & Approval</h2></div><div class="field"><label>Order ID</label><input placeholder="Backend সংযোগের পর Order নির্বাচন হবে" disabled></div><div class="field"><label>Customer / Retailer</label><input placeholder="স্বয়ংক্রিয়ভাবে দেখাবে" disabled></div><div class="field"><label>PDF File</label><input type="file" accept="application/pdf" disabled></div><p class="small">শুধুমাত্র সংশ্লিষ্ট Customer-এর জন্য নির্দিষ্ট PDF private storage-এ রাখা হবে। অনুমোদিত Customer ছাড়া অন্য কেউ ডাউনলোড করতে পারবে না।</p><button class="btn" disabled>Upload & Approve</button></section>
-<section class="panel" id="wallet"><div class="panel-head"><h2>Wallet Overview</h2></div><div class="field"><label>Retailer ID খুঁজুন</label><input placeholder="যেমন: MT10001" disabled></div><div class="field"><label>Balance</label><input placeholder="Backend থেকে আসবে" disabled></div><p class="small">প্রতিটি Credit, Debit ও Refund-এর আলাদা Ledger থাকবে। Admin-এর পরিবর্তনও audit log-এ সংরক্ষিত হবে।</p><button class="btn" disabled>Balance Update</button></section>
-</div>
-<section class="panel" id="customers"><div class="panel-head"><h2>Retailer / Customer Management</h2></div><div class="table-wrap"><table><thead><tr><th>Retailer ID</th><th>নাম</th><th>মোবাইল</th><th>Wallet Balance</th><th>Account Status</th></tr></thead><tbody><tr><td colspan="5" style="text-align:center;color:#718294;padding:22px">Backend যুক্ত হলে Customer তালিকা দেখা যাবে।</td></tr></tbody></table></div></section>
-<section class="panel" id="settings"><h2>পরবর্তী ধাপ</h2><p class="small">১. Secure Admin Login ও role permission<br>২. Database schema এবং Row-Level Security<br>৩. Wallet-এর atomic debit/credit ও transaction ledger<br>৪. Private PDF storage ও Customer-only download<br>৫. Payment Gateway webhook verification</p></section>
-</main>
-</div>
-<footer>© MIRDDA TELICOM · Admin UI Preview</footer>
-</body>
-</html>
+<script>
+(() => {
+ const $=id=>document.getElementById(id); let client=null;
+ const say=(id,msg,kind='')=>{$(id).textContent=msg;$(id).className='msg '+kind};
+ const show=(id,on)=>$(id).classList.toggle('hidden',!on);
+ const init=async()=>{
+  const url=localStorage.getItem('mt_sb_url'),key=localStorage.getItem('mt_sb_key');
+  if(!url||!key){show('config',true);show('login',false);return}
+  if(!window.supabase){say('configmsg','Supabase JS library load হয়নি। Internet connection পরীক্ষা করুন।','err');return}
+  client=window.supabase.createClient(url,key);
+  show('config',false);show('login',true);
+  const {data:{session}}=await client.auth.getSession();
+  if(session) await enterApp(session.user);
+ };
+ $('saveconfig').onclick=()=>{const u=$('sburl').value.trim(),k=$('sbkey').value.trim();if(!u.startsWith('https://')||!k){say('configmsg','সঠিক Project URL ও anon/public key দিন।','err');return}localStorage.setItem('mt_sb_url',u);localStorage.setItem('mt_sb_key',k);init()};
+ $('loginbtn').onclick=async()=>{say('loginmsg','Login হচ্ছে…');const {data,error}=await client.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){say('loginmsg',error.message,'err');return}await enterApp(data.user)};
+ async function enterApp(user){
+  const {data:profile,error}=await client.from('profiles').select('role,full_name').eq('id',user.id).single();
+  if(error||!profile||profile.role!=='admin'){await client.auth.signOut();say('loginmsg','এই অ্যাকাউন্টে Admin অনুমতি নেই। Supabase SQL Editor-এ আপনার user UUID-কে admin করুন।','err');show('login',true);return}
+  show('login',false);show('app',true);$('adminemail').textContent=user.email||profile.full_name||'Admin';await Promise.all([loadOrders(),loadRetailers(),loadServices()]);
+ }
+ $('logout').onclick=async()=>{await client.auth.signOut();show('app',false);show('login',true)};
+ document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['orders','retailers','services'].forEach(t=>show('tab-'+t,t===b.dataset.tab))});
+ $('refreshorders').onclick=loadOrders;$('refreshretailers').onclick=loadRetailers;
+ async function loadOrders(){
+  $('orderrows').innerHTML='<tr><td colspan="7">Loading…</td></tr>';
+  const {data,error}=await client.from('orders').select('id,amount,status,created_at,pdf_path,profiles!orders_customer_id_fkey(retailer_id,full_name,phone),services!orders_service_id_fkey(name)').order('created_at',{ascending:false}).limit(100);
+  if(error){$('orderrows').innerHTML='<tr><td colspan="7">Error: '+esc(error.message)+'</td></tr>';return}
+  $('norders').textContent=data.length;$('npending').textContent=data.filter(o=>o.status==='pending').length;
+  $('orderrows').innerHTML=data.map(o=>'<tr><td>'+esc(o.id.slice(0,8))+'</td><td>'+esc(o.profiles?.retailer_id||'—')+'<br><span class="muted">'+esc(o.profiles?.full_name||'')+'</span></td><td>'+esc(o.services?.name||'—')+'</td><td>₹'+Number(o.amount).toFixed(2)+'</td><td><span class="pill '+o.status+'">'+o.status.toUpperCase()+'</span></td><td>'+new Date(o.created_at).toLocaleString('bn-IN')+'</td><td class="orderactions">'+(o.status==='pending'?'<input type="file" accept="application/pdf" id="pdf-'+o.id+'"><br><button class="btn" data-approve="'+o.id+'">Upload & Approve</button> <button class="btn danger" data-reject="'+o.id+'">Reject & Refund</button>':'—')+'</td></tr>').join('')||'<tr><td colspan="7">কোনো Order নেই।</td></tr>';
+  document.querySelectorAll('[data-approve]').forEach(b=>b.onclick=()=>approve(b.dataset.approve));document.querySelectorAll('[data-reject]').forEach(b=>b.onclick=()=>reject(b.dataset.reject));
+ }
+ async function approve(id){
+  const file=$('pdf-'+id)?.files?.[0];if(!file){say('appmsg','প্রথমে PDF ফাইল নির্বাচন করুন।','err');return}if(file.type!=='application/pdf'||file.size>10*1024*1024){say('appmsg','শুধু PDF এবং সর্বোচ্চ 10 MB ফাইল গ্রহণযোগ্য।','err');return}
+  say('appmsg','PDF Upload হচ্ছে…');const path=id+'/'+Date.now()+'.pdf';
+  const {error:upErr}=await client.storage.from('retailer-pdfs').upload(path,file,{contentType:'application/pdf',upsert:false});
+  if(upErr){say('appmsg','Upload ব্যর্থ: '+upErr.message,'err');return}
+  const {error}=await client.rpc('admin_set_order_status',{p_order_id:id,p_status:'approved',p_pdf_path:path,p_note:null});
+  if(error){await client.storage.from('retailer-pdfs').remove([path]);say('appmsg','Approval ব্যর্থ: '+error.message,'err');return}
+  say('appmsg','Order Approved এবং PDF যুক্ত হয়েছে।','ok');await loadOrders();
+ }
+ async function reject(id){if(!confirm('এই Order Reject করে Customer-কে Wallet Refund করবেন?'))return;const {error}=await client.rpc('admin_set_order_status',{p_order_id:id,p_status:'rejected',p_pdf_path:null,p_note:'Rejected by admin'});if(error){say('appmsg',error.message,'err');return}say('appmsg','Order rejected; refund processed.','ok');await loadOrders()}
+ async function loadRetailers(){const {data,error}=await client.from('profiles').select('retailer_id,full_name,phone,wallet_balance,created_at').order('created_at',{ascending:false}).limit(200);if(error){say('appmsg',error.message,'err');return}$('nretailers').textContent=data.length;$('retailerrows').innerHTML=data.map(p=>'<tr><td>'+esc(p.retailer_id)+'</td><td>'+esc(p.full_name||'—')+'</td><td>'+esc(p.phone||'—')+'</td><td>₹'+Number(p.wallet_balance).toFixed(2)+'</td><td>'+new Date(p.created_at).toLocaleDateString('bn-IN')+'</td></tr>').join('')||'<tr><td colspan="5">কোনো Retailer নেই।</td></tr>'}
+ async function loadServices(){const {data,error}=await client.from('services').select('name,price,active').order('name');if(error){say('appmsg',error.message,'err');return}$('servicerows').innerHTML=data.map(s=>'<tr><td>'+esc(s.name)+'</td><td>₹'+Number(s.price).toFixed(2)+'</td><td>'+(s.active?'Active':'Inactive')+'</td></tr>').join('')}
+ $('addservice').onclick=async()=>{const name=$('servicename').value.trim(),price=Number($('serviceprice').value);if(!name||!Number.isFinite(price)||price<=0){say('appmsg','Service name ও সঠিক price দিন।','err');return}const {error}=await client.from('services').insert({name,price});if(error){say('appmsg',error.message,'err');return}$('servicename').value='';$('serviceprice').value='';say('appmsg','Service যোগ হয়েছে।','ok');loadServices()};
+ function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+ init();
+})();
+</script></body></html>
