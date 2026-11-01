@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel | MIRDDA TELICOM</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#102a43;--blue:#1769aa;--cyan:#20b8c5;--bg:#f3f7fb;--ink:#183247;--muted:#6b7d8d;--line:#e4ebf1}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:'Hind Siliguri',sans-serif;color:var(--ink)}
+header{background:linear-gradient(120deg,var(--navy),var(--blue));color:#fff;padding:18px 4%;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.brand{font-size:22px;font-weight:700}.brand small{display:block;font-size:12px;font-weight:400;color:#d8efff}
+header a{color:#fff;text-decoration:none;border:1px solid #ffffff70;padding:8px 13px;border-radius:8px}
+.layout{display:grid;grid-template-columns:225px 1fr;min-height:calc(100vh - 70px)}
+aside{background:#fff;border-right:1px solid var(--line);padding:22px 14px}
+aside h3{font-size:13px;color:var(--muted);margin:4px 12px 12px}
+.nav a{display:block;padding:11px 13px;margin:4px 0;border-radius:9px;text-decoration:none;color:var(--ink);font-weight:500}
+.nav a.active,.nav a:hover{background:#eaf5fb;color:var(--blue)}
+main{padding:26px 3.5%;max-width:1400px;width:100%;margin:auto}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+h1{font-size:28px;margin:0;color:var(--navy)}.muted{color:var(--muted);margin:4px 0 0}
+.notice{background:#fff8e7;border:1px solid #f2d79a;color:#765312;padding:13px 16px;border-radius:10px;margin:0 0 20px;line-height:1.55}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}
+.card,.panel{background:#fff;border:1px solid var(--line);border-radius:13px;padding:18px;box-shadow:0 4px 16px #18324708}
+.card span{font-size:13px;color:var(--muted)}.card strong{display:block;font-size:28px;color:var(--navy);margin-top:5px}
+.panel{margin-bottom:18px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:13px}
+h2{font-size:19px;margin:0;color:var(--navy)}
+.btn{border:0;border-radius:8px;padding:9px 14px;background:var(--blue);color:#fff;font:600 14px 'Hind Siliguri';cursor:not-allowed;opacity:.55}
+table{width:100%;border-collapse:collapse;min-width:650px}th,td{text-align:left;padding:12px 11px;border-bottom:1px solid var(--line);font-size:14px}th{background:#f5f8fb;color:#526678;font-weight:600}tr:last-child td{border-bottom:0}
+.table-wrap{overflow:auto}.status{display:inline-block;padding:4px 9px;border-radius:30px;font-size:12px;font-weight:600}.pending{background:#fff2d7;color:#946200}.approved{background:#e1f6eb;color:#147343}
+.grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}.field{margin:10px 0}.field label{display:block;font-size:14px;margin-bottom:5px;color:#53687a}.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #d8e2ea;border-radius:8px;font:14px 'Hind Siliguri';background:#fafcfe}.small{font-size:13px;color:var(--muted);line-height:1.6}
+footer{text-align:center;color:var(--muted);padding:18px;font-size:13px}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+@media(max-width:650px){.layout{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid var(--line);padding:9px}.nav{display:flex;overflow:auto}.nav a{white-space:nowrap}.layout{min-height:auto}main{padding:20px 4%}.cards{gap:9px}.card{padding:13px}.card strong{font-size:23px}h1{font-size:24px}}
+</style>
+</head>
+<body>
+<header><div class="brand">MIRDDA TELICOM <small>Retailer Portal · Admin Dashboard</small></div><a href="index.html">← মূল Website</a></header>
+<div class="layout">
+<aside><h3>ADMIN MENU</h3><nav class="nav"><a class="active" href="#dashboard">ড্যাশবোর্ড</a><a href="#orders">অর্ডার ম্যানেজমেন্ট</a><a href="#customers">Retailer / Customer</a><a href="#wallet">Wallet Transactions</a><a href="#upload">PDF Upload</a><a href="#settings">সেটিংস</a></nav></aside>
+<main>
+<div class="topline"><div><h1 id="dashboard">Admin Dashboard</h1><p class="muted">MIRDDA TELICOM — Portal Management</p></div><span class="status pending">Backend সংযোগ বাকি</span></div>
+<div class="notice"><strong>সেটআপের অবস্থা:</strong> এটি Admin Panel-এর প্রাথমিক UI Preview। এখনো Login Authentication, Database, Wallet debit/credit, PDF Storage বা Approve/Reject চালু করা হয়নি। Backend যুক্ত ও নিরাপত্তা পরীক্ষা না হওয়া পর্যন্ত এখানে কোনো বাস্তব Customer তথ্য বা PDF আপলোড করবেন না।</div>
+<div class="cards">
+<div class="card"><span>মোট Retailer</span><strong>—</strong></div>
+<div class="card"><span>আজকের Order</span><strong>—</strong></div>
+<div class="card"><span>Pending Order</span><strong>—</strong></div>
+<div class="card"><span>Wallet Top-up Request</span><strong>—</strong></div>
+</div>
+<section class="panel" id="orders"><div class="panel-head"><h2>সাম্প্রতিক PDF Orders</h2><button class="btn" disabled>সব Order দেখুন</button></div><div class="table-wrap"><table><thead><tr><th>Order ID</th><th>Retailer ID</th><th>Service</th><th>Amount</th><th>তারিখ</th><th>Status</th><th>Action</th></tr></thead><tbody><tr><td colspan="7" style="text-align:center;color:#718294;padding:24px">Backend যুক্ত হলে এখানে বাস্তব Order দেখা যাবে।</td></tr></tbody></table></div></section>
+<div class="grid2">
+<section class="panel" id="upload"><div class="panel-head"><h2>PDF Upload & Approval</h2></div><div class="field"><label>Order ID</label><input placeholder="Backend সংযোগের পর Order নির্বাচন হবে" disabled></div><div class="field"><label>Customer / Retailer</label><input placeholder="স্বয়ংক্রিয়ভাবে দেখাবে" disabled></div><div class="field"><label>PDF File</label><input type="file" accept="application/pdf" disabled></div><p class="small">শুধুমাত্র সংশ্লিষ্ট Customer-এর জন্য নির্দিষ্ট PDF private storage-এ রাখা হবে। অনুমোদিত Customer ছাড়া অন্য কেউ ডাউনলোড করতে পারবে না।</p><button class="btn" disabled>Upload & Approve</button></section>
+<section class="panel" id="wallet"><div class="panel-head"><h2>Wallet Overview</h2></div><div class="field"><label>Retailer ID খুঁজুন</label><input placeholder="যেমন: MT10001" disabled></div><div class="field"><label>Balance</label><input placeholder="Backend থেকে আসবে" disabled></div><p class="small">প্রতিটি Credit, Debit ও Refund-এর আলাদা Ledger থাকবে। Admin-এর পরিবর্তনও audit log-এ সংরক্ষিত হবে।</p><button class="btn" disabled>Balance Update</button></section>
+</div>
+<section class="panel" id="customers"><div class="panel-head"><h2>Retailer / Customer Management</h2></div><div class="table-wrap"><table><thead><tr><th>Retailer ID</th><th>নাম</th><th>মোবাইল</th><th>Wallet Balance</th><th>Account Status</th></tr></thead><tbody><tr><td colspan="5" style="text-align:center;color:#718294;padding:22px">Backend যুক্ত হলে Customer তালিকা দেখা যাবে।</td></tr></tbody></table></div></section>
+<section class="panel" id="settings"><h2>পরবর্তী ধাপ</h2><p class="small">১. Secure Admin Login ও role permission<br>২. Database schema এবং Row-Level Security<br>৩. Wallet-এর atomic debit/credit ও transaction ledger<br>৪. Private PDF storage ও Customer-only download<br>৫. Payment Gateway webhook verification</p></section>
+</main>
+</div>
+<footer>© MIRDDA TELICOM · Admin UI Preview</footer>
+</body>
+</html>
