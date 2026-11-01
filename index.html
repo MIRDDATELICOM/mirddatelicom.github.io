@@ -19,16 +19,18 @@ nav{display:flex;gap:18px;flex-wrap:wrap}nav a{color:white;text-decoration:none;
 .btn{display:inline-block;padding:12px 22px;border-radius:9px;text-decoration:none;font-weight:600;margin:5px 8px 5px 0}.primary{background:#20b8c5;color:#062c3d}.outline{border:1px solid #c8eaff;color:white}
 section{padding:54px 6%}.section-title{text-align:center;margin:0 0 8px;font-size:32px;color:var(--navy)}.sub{text-align:center;color:var(--muted);margin:0 0 30px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:17px}.service{background:white;border:1px solid #e1ebf3;border-radius:14px;padding:22px;box-shadow:0 7px 22px rgba(16,42,67,.06)}.service .emoji{font-size:29px}.service h3{margin:8px 0 5px;color:var(--navy)}.service p{margin:0;color:var(--muted);font-size:15px}
+.rates{background:#eaf3fa}.rate-wrap{max-width:850px;margin:auto;background:#fff;border:1px solid #dce8f1;border-radius:15px;overflow:hidden;box-shadow:0 8px 25px rgba(16,42,67,.07)}
+table{width:100%;border-collapse:collapse}th,td{padding:15px 18px;text-align:left;border-bottom:1px solid #e8eef3;font-size:16px}th{background:#102a43;color:#fff;font-weight:600}td:last-child,th:last-child{text-align:right;font-weight:700;white-space:nowrap}tbody tr:last-child td{border-bottom:0}.rate-note{max-width:850px;margin:14px auto 0;color:#607487;font-size:14px;line-height:1.6}
 .about{background:white}.about-inner{max-width:850px;margin:auto;text-align:center;font-size:17px;line-height:1.8}
 .contact{background:#102a43;color:white}.contact .section-title{color:white}.contact .sub{color:#d5e7f4}.contact-card{max-width:700px;margin:auto;background:#fff;color:var(--ink);padding:25px;border-radius:15px;text-align:center}.contact-card p{margin:8px}
 footer{text-align:center;background:#091e30;color:#d5e7f4;padding:18px;font-size:14px}
-@media(max-width:600px){header{align-items:flex-start}.hero{padding-top:52px}.hero p{font-size:17px}nav{gap:12px}}
+@media(max-width:600px){header{align-items:flex-start}.hero{padding-top:52px}.hero p{font-size:17px}nav{gap:12px}th,td{padding:12px 10px;font-size:14px}}
 </style>
 </head>
 <body>
 <header>
   <div class="brand">MIRDDA TELICOM<small>আপনার বিশ্বস্ত ডিজিটাল পরিষেবা কেন্দ্র</small></div>
-  <nav><a href="#home">হোম</a><a href="#services">পরিষেবা</a><a href="#about">আমাদের সম্পর্কে</a><a href="#contact">যোগাযোগ</a></nav>
+  <nav><a href="#home">হোম</a><a href="#services">পরিষেবা</a><a href="#rates">রেট চার্ট</a><a href="#about">আমাদের সম্পর্কে</a><a href="#contact">যোগাযোগ</a></nav>
 </header>
 <main>
 <section class="hero" id="home">
@@ -43,13 +45,31 @@ footer{text-align:center;background:#091e30;color:#d5e7f4;padding:18px;font-size
   <div class="grid">
     <article class="service"><div class="emoji">📱</div><h3>মোবাইল সার্ভিসিং</h3><p>মোবাইল রিপেয়ারিং, ডিসপ্লে ও ব্যাটারি সংক্রান্ত পরিষেবা।</p></article>
     <article class="service"><div class="emoji">🪪</div><h3>আধার পরিষেবা</h3><p>অনুমোদিত আধার-সংক্রান্ত সহায়তা ও প্রিন্ট পরিষেবা।</p></article>
-    <article class="service"><div class="emoji">🗳️</div><h3>ভোটার কার্ড</h3><p>ভোটার আবেদন, সংশোধন ও ডাউনলোড সংক্রান্ত সহায়তা।</p></article>
+    <article class="service"><div class="emoji">🗳️</div><h3>ভোটার কার্ড</h3><p>ভোটার আবেদন, সংশোধন ও নিজস্ব নথি ডাউনলোডে সহায়তা।</p></article>
     <article class="service"><div class="emoji">📄</div><h3>PAN কার্ড</h3><p>নতুন PAN আবেদন ও তথ্য সংশোধনের সহায়তা।</p></article>
-    <article class="service"><div class="emoji">🍚</div><h3>রেশন কার্ড</h3><p>নতুন আবেদন, সংশোধন ও অন্যান্য রেশন পরিষেবায় সহায়তা।</p></article>
+    <article class="service"><div class="emoji">🍚</div><h3>রেশন কার্ড</h3><p>নতুন আবেদন, সংশোধন ও নিজস্ব রেশন নথি পেতে সহায়তা।</p></article>
     <article class="service"><div class="emoji">🖨️</div><h3>প্রিন্ট ও PVC কার্ড</h3><p>ডকুমেন্ট প্রিন্ট, ফটো ও PVC কার্ড সংক্রান্ত পরিষেবা।</p></article>
     <article class="service"><div class="emoji">🎓</div><h3>স্কলারশিপ ও অনলাইন ফর্ম</h3><p>স্কলারশিপ এবং বিভিন্ন অনলাইন আবেদন পূরণে সহায়তা।</p></article>
     <article class="service"><div class="emoji">🔌</div><h3>মোবাইল অ্যাক্সেসরিজ</h3><p>মোবাইল কভার, চার্জার, হেডফোন ও অন্যান্য সামগ্রী।</p></article>
   </div>
+</section>
+<section class="rates" id="rates">
+  <h2 class="section-title">SERVICE RATE CHART</h2>
+  <p class="sub">MIRDDA TELICOM — পরিষেবার নির্ধারিত মূল্য</p>
+  <div class="rate-wrap">
+    <table aria-label="Service rate chart">
+      <thead><tr><th>পরিষেবার নাম</th><th>মূল্য</th></tr></thead>
+      <tbody>
+        <tr><td>Voter Card PDF</td><td>₹30</td></tr>
+        <tr><td>New PAN Card Apply</td><td>₹250</td></tr>
+        <tr><td>De-active Ration Card PDF</td><td>₹30</td></tr>
+        <tr><td>Birth Certificate Download</td><td>₹60</td></tr>
+        <tr><td>RC PDF</td><td>₹30</td></tr>
+        <tr><td>DL PDF</td><td>₹30</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="rate-note">দ্রষ্টব্য: এই মূল্য দোকানের পরিষেবা-চার্জ হিসেবে দেখানো হয়েছে। কেবল নিজের বা যথাযথ অনুমতিপ্রাপ্ত নথির ক্ষেত্রেই পরিষেবা দেওয়া হবে। সরকারি পোর্টালে OTP, পরিচয় যাচাই বা অনুমোদন প্রয়োজন হলে সেই নিয়ম মেনেই কাজ সম্পন্ন হবে। সরকারি ফি থাকলে তা আলাদা হতে পারে।</p>
 </section>
 <section class="about" id="about">
   <h2 class="section-title">MIRDDA TELICOM সম্পর্কে</h2>
