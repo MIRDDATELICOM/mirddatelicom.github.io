@@ -19,13 +19,79 @@ const $=id=>document.getElementById(id);let sb=null,pendingPhone='';
 function say(t,kind=''){ $('msg').className=kind; $('msg').textContent=t; }
 function init(){const u=localStorage.getItem('mt_supabase_url')||'';const k=localStorage.getItem('mt_supabase_key')||'';$('url').value=u;$('key').value=k;if(u&&k){sb=createClient(u,k);$('auth').classList.remove('hidden');$('configMsg').textContent='Connected config saved in this browser.';}}
 $('saveConfig').onclick=()=>{const u=$('url').value.trim(),k=$('key').value.trim();if(!u.startsWith('https://')||!k){$('configMsg').textContent='সঠিক Project URL ও Publishable Key দিন।';return;}localStorage.setItem('mt_supabase_url',u);localStorage.setItem('mt_supabase_key',k);init();$('configMsg').textContent='Config saved. এখন Registration বা Login করুন।';};
-$('register').onclick=async()=>{try{say('Registration হচ্ছে...');const phone=$('regPhone').value.trim(),password=$('regPass').value,name=$('name').value.trim();if(!/^\+[1-9]\d{7,14}$/.test(phone))throw Error('মোবাইল নম্বর +91 দিয়ে লিখুন।');if(password.length<6)throw Error('Password কমপক্ষে ৬ অক্ষরের হতে হবে।');if(!name)throw Error('আপনার নাম লিখুন।');const {data,error}=await sb.auth.signUp({phone,password,options:{data:{full_name:name}}});if(error)throw error;if(data.session){say('Registration সফল। এখন Dashboard খুলছে।','success');await loadDash();}else{pendingPhone=phone;$('otpBox').classList.remove('hidden');say('আপনার মোবাইলে OTP পাঠানো হয়েছে। OTP দিয়ে Verify করুন।','success');}}catch(e){say(e.message,'error');}};
-$('verify').onclick=async()=>{try{const {error}=await sb.auth.verifyOtp({phone:pendingPhone,token:$('otp').value.trim(),type:'sms'});if(error)throw error;say('মোবাইল Verify হয়েছে।','success');$('otpBox').classList.add('hidden');await loadDash();}catch(e){say(e.message,'error');}};
-$('login').onclick=async()=>{try{say('Login হচ্ছে...');const {error}=await sb.auth.signInWithPassword({phone:$('loginPhone').value.trim(),password:$('loginPass').value});if(error)throw error;await loadDash();say('Login সফল।','success');}catch(e){say(e.message,'error');}};
-async function loadDash(){const {data:{user}}=await sb.auth.getUser();if(!user)return;const {data:p,error:pe}=await sb.from('profiles').select('retailer_id,full_name,phone,wallet_balance,role').eq('id',user.id).single();if(pe)throw pe;if(p.role==='admin'){say('এটি Retailer Panel। Admin Panel ব্যবহার করুন।','error');return;}$('auth').classList.add('hidden');$('dash').classList.remove('hidden');$('retailerId').textContent=p.retailer_id;$('retailerName').textContent=p.full_name||'—';$('balance').textContent='₹'+Number(p.wallet_balance).toFixed(2);
-const {data:sv,error:se}=await sb.from('services').select('id,name,price').eq('active',true).order('name');if(se)throw se;$('services').innerHTML='';for(const s of sv||[]){const d=document.createElement('div');d.className='service';const h=document.createElement('b');h.textContent=s.name+' ';const price=document.createElement('span');price.className='price';price.textContent='₹'+Number(s.price).toFixed(2);const b=document.createElement('button');b.textContent='Order করুন';b.onclick=()=>place(s.id);d.append(h,price,b);$('services').append(d);}
-const {data:os,error:oe}=await sb.from('orders').select('id,amount,status,created_at,services(name)').order('created_at',{ascending:false});if(oe)throw oe;$('orders').innerHTML='';for(const o of os||[]){const d=document.createElement('div');d.className='order';const title=document.createElement('b');title.textContent=o.services?.name||'Service';const detail=document.createElement('div');detail.textContent='₹'+Number(o.amount).toFixed(2)+' • '+o.status.toUpperCase()+' • '+new Date(o.created_at).toLocaleString('en-IN');d.append(title,detail);if(o.status==='approved'){const a=document.createElement('button');a.textContent='PDF Download';a.onclick=async()=>{const {data,error}=await sb.storage.from('retailer-pdfs').createSignedUrl(o.id,60);if(error){say('PDF link তৈরি হয়নি। Admin-কে জানান।','error');return;}window.open(data.signedUrl,'_blank','noopener');};/* actual storage path is fetched below */a.onclick=async()=>{const {data:ord}=await sb.from('orders').select('pdf_path').eq('id',o.id).single();if(!ord?.pdf_path){say('PDF এখনও যুক্ত হয়নি।','error');return;}const {data,error}=await sb.storage.from('retailer-pdfs').createSignedUrl(ord.pdf_path,60);if(error){say(error.message,'error');return;}window.open(data.signedUrl,'_blank','noopener');};d.append(a);}$('orders').append(d);}}
+
+function retailerLoginEmail(phone) {
+  const digits = phone.replace(/\D/g, '');
+  return digits + '@example.com';
+}
+
+$('register').onclick = async () => {
+  try {
+    say('Registration হচ্ছে...');
+    const phone = $('regPhone').value.trim();
+    const password = $('regPass').value;
+    const name = $('name').value.trim();
+
+    if (!/^\+[1-9]\d{7,14}$/.test(phone))
+      throw Error('মোবাইল নম্বর +91 দিয়ে লিখুন।');
+
+    if (password.length < 6)
+      throw Error('Password কমপক্ষে ৬ অক্ষরের হতে হবে।');
+
+    if (!name) throw Error('আপনার নাম লিখুন।');
+
+    const { data, error } = await sb.auth.signUp({
+      email: retailerLoginEmail(phone),
+      password,
+      options: {
+        data: {
+          full_name: name,
+          phone: phone
+        }
+      }
+    });
+
+    if (error) throw error;
+
+    if (data.session) {
+      say('Registration সফল। Dashboard খুলছে।', 'success');
+      await loadDash();
+    } else {
+      say('Registration হয়েছে। Login করুন।', 'success');
+    }
+  } catch (e) {
+    say(e.message, 'error');
+  }
+};
+
+$('login').onclick = async () => {
+  try {
+    say('Login হচ্ছে...');
+
+    const phone = $('loginPhone').value.trim();
+    const password = $('loginPass').value;
+
+    if (!/^\+[1-9]\d{7,14}$/.test(phone))
+      throw Error('মোবাইল নম্বর +91 দিয়ে লিখুন।');
+
+    const { error } = await sb.auth.signInWithPassword({
+      email: retailerLoginEmail(phone),
+      password
+    });
+
+    if (error) throw error;
+
+    await loadDash();
+    say('Login সফল।', 'success');
+  } catch (e) {
+    say(e.message, 'error');
+  }
+};
+
+async function loadDash(){const {data:{user}}=await sb.auth.getUser();if(!user)return;const {data:p,error:pe}=await sb.from('profiles').select('retailer_id,full_name,phone,wallet_balance,role').eq('id',user.id).single();if(pe)throw pe;if(p.role==='admin'){say('এer';const title=document.createElement('b');title.textContent=o.services?.name||'Service';const detail=document.createElement('div');detail.textContent='₹'+Number(o.amount).toFixed(2)+' • '+o.status.toUpperCase()+' • '+new Date(o.created_at).toLocaleString('en-IN');d.append(title,detail);if(o.status==='approved'){const a=document.createElement('button');a.textContent='PDF Download';a.onclick=async()=>{const {data,error}=await sb.storage.from('retailer-pdfs').createSignedUrl(o.id,60);if(error){say('PDF link তৈরি হয়নি। Admin-কে জানান।','error');return;}window.open(data.signedUrl,'_blank','noopener');};/* actual storage path is fetched below */a.onclick=async()=>{const {data:ord}=await sb.from('orders').select('pdf_path').eq('id',o.id).single();if(!ord?.pdf_path){say('PDF এখনও যুক্ত হয়নি।','error');return;}const {data,error}=await sb.storage.from('retailer-pdfs').createSignedUrl(ord.pdf_path,60);if(error){say(error.message,'error');return;}window.open(data.signedUrl,'_blank','noopener');};d.append(a);}$('orders').append(d);}}
 async function place(id){try{const {error}=await sb.rpc('place_order',{p_service_id:id});if(error)throw error;say('Order Pending হয়েছে। Wallet থেকে টাকা কাটা হয়েছে।','success');await loadDash();}catch(e){say(e.message,'error');}}
 $('refresh').onclick=()=>loadDash().catch(e=>say(e.message,'error'));$('logout').onclick=async()=>{await sb.auth.signOut();$('dash').classList.add('hidden');$('auth').classList.remove('hidden');say('Logout হয়েছে।');};
-init();
+init();টি Retailer Panel। Admin Panel ব্যবহার করুন।','error');return;}$('auth').classList.add('hidden');$('dash').classList.remove('hidden');$('retailerId').textContent=p.retailer_id;$('retailerName').textContent=p.full_name||'—';$('balance').textContent='₹'+Number(p.wallet_balance).toFixed(2);
+const {data:sv,error:se}=await sb.from('services').select('id,name,price').eq('active',true).order('name');if(se)throw se;$('services').innerHTML='';for(const s of sv||[]){const d=document.createElement('div');d.className='service';const h=document.createElement('b');h.textContent=s.name+' ';const price=document.createElement('span');price.className='price';price.textContent='₹'+Number(s.price).toFixed(2);const b=document.createElement('button');b.textContent='Order করুন';b.onclick=()=>place(s.id);d.append(h,price,b);$('services').append(d);}
+const {data:os,error:oe}=await sb.from('orders').select('id,amount,status,created_at,services(name)').order('created_at',{ascending:false});if(oe)throw oe;$('orders').innerHTML='';for(const o of os||[]){const d=document.createElement('div');d.className='ord
 </script></body></html>
