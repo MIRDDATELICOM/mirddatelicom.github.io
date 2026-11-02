@@ -1,97 +1,164 @@
 <!doctype html>
-<html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MIRDDA TELICOM Retailer Portal</title>
+<html lang="bn">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MIRDDA TELICOM Retailer Portal</title>
 <style>
-:root{font-family:Arial,'Noto Sans Bengali',sans-serif;color:#172033;background:#f3f6fb}*{box-sizing:border-box}body{margin:0}.wrap{max-width:900px;margin:28px auto;padding:16px}.brand{text-align:center;background:#102a56;color:white;padding:24px;border-radius:18px}.brand h1{margin:0 0 8px}.panel{background:white;margin:16px 0;padding:20px;border-radius:16px;box-shadow:0 4px 18px #14213d12}input,button{width:100%;padding:13px;margin:7px 0;border:1px solid #ccd5e2;border-radius:9px;font-size:16px}button{background:#1457c5;color:white;border:0;font-weight:700;cursor:pointer}button.secondary{background:#e8eef9;color:#17345e}.muted{color:#667085;font-size:14px}.hidden{display:none}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.service,.order{border:1px solid #e1e7f0;border-radius:12px;padding:14px;margin:10px 0}.price{font-weight:bold;color:#1457c5}.status{font-weight:bold}.error{color:#b42318}.success{color:#067647}a{color:#1457c5}
-</style></head><body><div class="wrap">
+:root{font-family:Arial,'Noto Sans Bengali',sans-serif;color:#172033;background:#f3f6fb}*{box-sizing:border-box}body{margin:0}.wrap{max-width:900px;margin:28px auto;padding:16px}.brand{text-align:center;background:#102a56;color:#fff;padding:24px;border-radius:18px}.brand h1{margin:0 0 8px}.panel{background:#fff;margin:16px 0;padding:20px;border-radius:16px;box-shadow:0 4px 18px #14213d12}input,button{width:100%;padding:13px;margin:7px 0;border:1px solid #ccd5e2;border-radius:9px;font-size:16px}button{background:#1457c5;color:#fff;border:0;font-weight:700;cursor:pointer}button.secondary{background:#e8eef9;color:#17345e}.muted{color:#667085;font-size:14px}.hidden{display:none}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.service,.order{border:1px solid #e1e7f0;border-radius:12px;padding:14px;margin:10px 0}.price{font-weight:bold;color:#1457c5}.error{color:#b42318}.success{color:#067647}footer{text-align:center;padding:20px;color:#667085;font-size:14px}
+</style>
+</head>
+<body><div class="wrap">
 <header class="brand"><h1>MIRDDA TELICOM</h1><div>RETAILER PORTAL</div><p>বাঁকুড়দহ হসপিটাল বাজার</p></header>
-<section class="panel"><h3>প্রথমবার সেটআপ</h3><p class="muted">Supabase Project URL এবং Publishable Key দিন। এগুলি আপনার এই ব্রাউজারে সেভ থাকবে। Secret বা service_role key দেবেন না।</p>
-<input id="url" placeholder="Supabase Project URL (https://....supabase.co)"><input id="key" placeholder="sb_publishable_..."><button id="saveConfig">Save & Connect</button><div id="configMsg" class="muted"></div></section>
-<section id="auth" class="panel hidden"><div class="grid"><div><h2>নতুন Retailer Registration</h2><input id="name" placeholder="আপনার নাম"><input id="regPhone" type="tel" inputmode="numeric" placeholder="মোবাইল নম্বর (দেশের কোডসহ, যেমন +91...)"><input id="regPass" type="password" placeholder="Password (কমপক্ষে ৬ অক্ষর)"><button id="register">Register করুন</button></div>
-<div><h2>Retailer Login</h2><input id="loginPhone" type="tel" inputmode="tel" placeholder="মোবাইল নম্বর (+91...)"><input id="loginPass" type="password" placeholder="Password"><button id="login">Login</button></div></div>
-<div id="otpBox" class="hidden"><h3>মোবাইলে OTP এসেছে</h3><input id="otp" inputmode="numeric" placeholder="OTP দিন"><button id="verify">Verify OTP</button></div><p class="muted">মোবাইল নম্বরের আগে +91 দিন। Registration-এর জন্য Supabase Authentication → Providers → Phone চালু এবং SMS provider সেটআপ থাকতে হবে।</p></section>
-<section id="dash" class="panel hidden"><div class="grid"><div><h2>Retailer Dashboard</h2><p>Retailer ID: <b id="retailerId">—</b></p><p>নাম: <b id="retailerName">—</b></p></div><div><p>Wallet Balance</p><h1 class="price" id="balance">₹0.00</h1><button class="secondary" id="refresh">Refresh</button><button class="secondary" id="logout">Logout</button></div></div>
-<h2>Available Services</h2><div id="services"></div><h2>আমার Orders</h2><div id="orders"></div><p class="muted">Wallet-এ টাকা যোগ করার অনলাইন পেমেন্ট ব্যবস্থা এখনও সংযুক্ত হয়নি। টাকা যোগের আগে Admin-এর সঙ্গে যোগাযোগ করুন।</p></section>
-<div id="msg" role="status"></div><footer class="muted" style="text-align:center;padding:20px">MIRDDA TELICOM • 8910703578</footer>
+<section class="panel">
+<h3>প্রথমবার সেটআপ</h3>
+<p class="muted">Supabase Project URL এবং Publishable Key দিন। এগুলি এই ব্রাউজারে সেভ থাকবে। Secret বা service_role key ব্যবহার করবেন না।</p>
+<input id="url" placeholder="Supabase Project URL (https://....supabase.co)">
+<input id="key" placeholder="sb_publishable_...">
+<button id="saveConfig">Save & Connect</button><div id="configMsg" class="muted"></div>
+</section>
+<section id="auth" class="panel hidden">
+<div class="grid">
+<div><h2>নতুন Retailer Registration</h2>
+<input id="name" placeholder="আপনার নাম">
+<input id="regPhone" type="tel" inputmode="numeric" placeholder="মোবাইল নম্বর (10 digit বা +91)">
+<input id="regPass" type="password" placeholder="Password (কমপক্ষে ৬ অক্ষর)">
+<button id="register">Register করুন</button></div>
+<div><h2>Retailer Login</h2>
+<input id="loginPhone" type="tel" inputmode="numeric" placeholder="মোবাইল নম্বর (10 digit বা +91)">
+<input id="loginPass" type="password" placeholder="Password">
+<button id="login">Login</button></div>
+</div>
+<p class="muted">গুরুত্বপূর্ণ: এই পেজে মোবাইল নম্বরকে login ID হিসেবে ব্যবহার করা হচ্ছে; Supabase-এর Email/Password পদ্ধতির জন্য ভিতরে একটি কৃত্রিম login ID তৈরি হয়। এটি আসল Phone OTP authentication নয়। Supabase-এ Email provider ON এবং Confirm email OFF থাকতে হবে।</p>
+</section>
+<section id="dash" class="panel hidden">
+<div class="grid"><div><h2>Retailer Dashboard</h2><p>Retailer ID: <b id="retailerId">—</b></p><p>নাম: <b id="retailerName">—</b></p></div>
+<div><p>Wallet Balance</p><h1 class="price" id="balance">₹0.00</h1><button class="secondary" id="refresh">Refresh</button><button class="secondary" id="logout">Logout</button></div></div>
+<h2>Available Services</h2><div id="services"></div>
+<h2>আমার Orders</h2><div id="orders"></div>
+<p class="muted">Wallet-এ টাকা যোগ করার ব্যবস্থা এখনও সংযুক্ত নয়। টাকা যোগ করার আগে Admin-এর সঙ্গে যোগাযোগ করুন।</p>
+</section>
+<div id="msg" role="status"></div>
+<footer>MIRDDA TELICOM • 8910703578</footer>
 </div>
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-const $=id=>document.getElementById(id);let sb=null,pendingPhone='';
-function say(t,kind=''){ $('msg').className=kind; $('msg').textContent=t; }
-function init(){const u=localStorage.getItem('mt_supabase_url')||'';const k=localStorage.getItem('mt_supabase_key')||'';$('url').value=u;$('key').value=k;if(u&&k){sb=createClient(u,k);$('auth').classList.remove('hidden');$('configMsg').textContent='Connected config saved in this browser.';}}
-$('saveConfig').onclick=()=>{const u=$('url').value.trim(),k=$('key').value.trim();if(!u.startsWith('https://')||!k){$('configMsg').textContent='সঠিক Project URL ও Publishable Key দিন।';return;}localStorage.setItem('mt_supabase_url',u);localStorage.setItem('mt_supabase_key',k);init();$('configMsg').textContent='Config saved. এখন Registration বা Login করুন।';};
-
-function retailerLoginEmail(phone) {
-  const digits = phone.replace(/\D/g, '');
-  return digits + '@example.com';
+const $ = id => document.getElementById(id);
+let sb = null;
+function say(message, kind=''){ $('msg').className=kind; $('msg').textContent=message; }
+function phoneDigits(value){
+  const digits=String(value||'').replace(/\\D/g,'');
+  if(digits.length===10) return '91'+digits;
+  if(digits.length===12 && digits.startsWith('91')) return digits;
+  throw new Error('সঠিক ১০ অঙ্কের ভারতীয় মোবাইল নম্বর বা +91 সহ নম্বর লিখুন।');
 }
-
-$('register').onclick = async () => {
-  try {
+function retailerLoginEmail(phone){ return phoneDigits(phone)+'@example.com'; }
+function init(){
+  const url=localStorage.getItem('mt_supabase_url')||'';
+  const key=localStorage.getItem('mt_supabase_key')||'';
+  $('url').value=url; $('key').value=key;
+  if(url && key){
+    sb=createClient(url,key);
+    $('auth').classList.remove('hidden');
+    $('configMsg').textContent='Supabase config এই ব্রাউজারে সেভ আছে।';
+    sb.auth.getSession().then(({data,error})=>{
+      if(error) return say(error.message,'error');
+      if(data.session) loadDash().catch(e=>say(e.message,'error'));
+    });
+  }
+}
+$('saveConfig').onclick=()=>{
+  const url=$('url').value.trim(),key=$('key').value.trim();
+  if(!url.startsWith('https://')||!key){$('configMsg').textContent='সঠিক Project URL ও Publishable Key দিন।';return;}
+  localStorage.setItem('mt_supabase_url',url);
+  localStorage.setItem('mt_supabase_key',key);
+  init(); $('configMsg').textContent='Config সেভ হয়েছে। এখন Registration বা Login করুন।';
+};
+$('register').onclick=async()=>{
+  try{
+    if(!sb) throw new Error('আগে Supabase Connect করুন।');
     say('Registration হচ্ছে...');
-    const phone = $('regPhone').value.trim();
-    const password = $('regPass').value;
-    const name = $('name').value.trim();
-
-    if (!/^\+[1-9]\d{7,14}$/.test(phone))
-      throw Error('মোবাইল নম্বর +91 দিয়ে লিখুন।');
-
-    if (password.length < 6)
-      throw Error('Password কমপক্ষে ৬ অক্ষরের হতে হবে।');
-
-    if (!name) throw Error('আপনার নাম লিখুন।');
-
-    const { data, error } = await sb.auth.signUp({
-      email: retailerLoginEmail(phone),
-      password,
-      options: {
-        data: {
-          full_name: name,
-          phone: phone
-        }
-      }
+    const name=$('name').value.trim(),phone=$('regPhone').value.trim(),password=$('regPass').value;
+    if(!name) throw new Error('আপনার নাম লিখুন।');
+    if(password.length<6) throw new Error('Password কমপক্ষে ৬ অক্ষরের হতে হবে।');
+    const {data,error}=await sb.auth.signUp({
+      email:retailerLoginEmail(phone),password,
+      options:{data:{full_name:name,phone:phone}}
     });
-
-    if (error) throw error;
-
-    if (data.session) {
-      say('Registration সফল। Dashboard খুলছে।', 'success');
-      await loadDash();
-    } else {
-      say('Registration হয়েছে। Login করুন।', 'success');
-    }
-  } catch (e) {
-    say(e.message, 'error');
-  }
+    if(error) throw error;
+    if(data.session){await loadDash();say('Registration সফল হয়েছে।','success');}
+    else say('Registration সম্পন্ন। এবার একই মোবাইল নম্বর ও Password দিয়ে Login করুন।','success');
+  }catch(e){say(e.message||'Registration করা যায়নি।','error');}
 };
-
-$('login').onclick = async () => {
-  try {
+$('login').onclick=async()=>{
+  try{
+    if(!sb) throw new Error('আগে Supabase Connect করুন।');
     say('Login হচ্ছে...');
-
-    const phone = $('loginPhone').value.trim();
-    const password = $('loginPass').value;
-
-    if (!/^\+[1-9]\d{7,14}$/.test(phone))
-      throw Error('মোবাইল নম্বর +91 দিয়ে লিখুন।');
-
-    const { error } = await sb.auth.signInWithPassword({
-      email: retailerLoginEmail(phone),
-      password
-    });
-
-    if (error) throw error;
-
-    await loadDash();
-    say('Login সফল।', 'success');
-  } catch (e) {
-    say(e.message, 'error');
-  }
+    const phone=$('loginPhone').value.trim(),password=$('loginPass').value;
+    const {error}=await sb.auth.signInWithPassword({email:retailerLoginEmail(phone),password});
+    if(error) throw error;
+    await loadDash();say('Login সফল।','success');
+  }catch(e){say(e.message||'Login করা যায়নি।','error');}
 };
-
-async function loadDash(){const {data:{user}}=await sb.auth.getUser();if(!user)return;const {data:p,error:pe}=await sb.from('profiles').select('retailer_id,full_name,phone,wallet_balance,role').eq('id',user.id).single();if(pe)throw pe;if(p.role==='admin'){say('এer';const title=document.createElement('b');title.textContent=o.services?.name||'Service';const detail=document.createElement('div');detail.textContent='₹'+Number(o.amount).toFixed(2)+' • '+o.status.toUpperCase()+' • '+new Date(o.created_at).toLocaleString('en-IN');d.append(title,detail);if(o.status==='approved'){const a=document.createElement('button');a.textContent='PDF Download';a.onclick=async()=>{const {data,error}=await sb.storage.from('retailer-pdfs').createSignedUrl(o.id,60);if(error){say('PDF link তৈরি হয়নি। Admin-কে জানান।','error');return;}window.open(data.signedUrl,'_blank','noopener');};/* actual storage path is fetched below */a.onclick=async()=>{const {data:ord}=await sb.from('orders').select('pdf_path').eq('id',o.id).single();if(!ord?.pdf_path){say('PDF এখনও যুক্ত হয়নি।','error');return;}const {data,error}=await sb.storage.from('retailer-pdfs').createSignedUrl(ord.pdf_path,60);if(error){say(error.message,'error');return;}window.open(data.signedUrl,'_blank','noopener');};d.append(a);}$('orders').append(d);}}
-async function place(id){try{const {error}=await sb.rpc('place_order',{p_service_id:id});if(error)throw error;say('Order Pending হয়েছে। Wallet থেকে টাকা কাটা হয়েছে।','success');await loadDash();}catch(e){say(e.message,'error');}}
-$('refresh').onclick=()=>loadDash().catch(e=>say(e.message,'error'));$('logout').onclick=async()=>{await sb.auth.signOut();$('dash').classList.add('hidden');$('auth').classList.remove('hidden');say('Logout হয়েছে।');};
-init();টি Retailer Panel। Admin Panel ব্যবহার করুন।','error');return;}$('auth').classList.add('hidden');$('dash').classList.remove('hidden');$('retailerId').textContent=p.retailer_id;$('retailerName').textContent=p.full_name||'—';$('balance').textContent='₹'+Number(p.wallet_balance).toFixed(2);
-const {data:sv,error:se}=await sb.from('services').select('id,name,price').eq('active',true).order('name');if(se)throw se;$('services').innerHTML='';for(const s of sv||[]){const d=document.createElement('div');d.className='service';const h=document.createElement('b');h.textContent=s.name+' ';const price=document.createElement('span');price.className='price';price.textContent='₹'+Number(s.price).toFixed(2);const b=document.createElement('button');b.textContent='Order করুন';b.onclick=()=>place(s.id);d.append(h,price,b);$('services').append(d);}
-const {data:os,error:oe}=await sb.from('orders').select('id,amount,status,created_at,services(name)').order('created_at',{ascending:false});if(oe)throw oe;$('orders').innerHTML='';for(const o of os||[]){const d=document.createElement('div');d.className='ord
+async function loadDash(){
+  const {data:{user},error:authError}=await sb.auth.getUser();
+  if(authError) throw authError;
+  if(!user) return;
+  const {data:p,error:profileError}=await sb.from('profiles')
+    .select('retailer_id,full_name,phone,wallet_balance,role').eq('id',user.id).single();
+  if(profileError) throw new Error('Profile পাওয়া যায়নি। Supabase profile trigger ও table policy পরীক্ষা করুন। ('+profileError.message+')');
+  if(p.role==='admin') throw new Error('এই অ্যাকাউন্টটি Admin। Retailer Portal-এ Retailer account দিয়ে Login করুন।');
+  $('auth').classList.add('hidden');$('dash').classList.remove('hidden');
+  $('retailerId').textContent=p.retailer_id||'—';
+  $('retailerName').textContent=p.full_name||'—';
+  $('balance').textContent='₹'+Number(p.wallet_balance||0).toFixed(2);
+  const {data:services,error:serviceError}=await sb.from('services')
+    .select('id,name,price').eq('active',true).order('name');
+  if(serviceError) throw serviceError;
+  $('services').innerHTML='';
+  for(const s of services||[]){
+    const card=document.createElement('div');card.className='service';
+    const title=document.createElement('b');title.textContent=s.name+' ';
+    const price=document.createElement('span');price.className='price';price.textContent='₹'+Number(s.price||0).toFixed(2);
+    const btn=document.createElement('button');btn.textContent='Order করুন';btn.onclick=()=>placeOrder(s.id);
+    card.append(title,price,btn);$('services').append(card);
+  }
+  const {data:orders,error:orderError}=await sb.from('orders')
+    .select('id,amount,status,created_at,pdf_path,services(name)')
+    .order('created_at',{ascending:false});
+  if(orderError) throw orderError;
+  $('orders').innerHTML='';
+  for(const o of orders||[]){
+    const card=document.createElement('div');card.className='order';
+    const title=document.createElement('b');title.textContent=o.services?.name||'Service Order';
+    const detail=document.createElement('div');
+    detail.textContent='₹'+Number(o.amount||0).toFixed(2)+' • '+String(o.status||'pending').toUpperCase()+' • '+(o.created_at?new Date(o.created_at).toLocaleString('en-IN'):'');
+    card.append(title,detail);
+    if(o.pdf_path){
+      const btn=document.createElement('button');btn.textContent='PDF Download';
+      btn.onclick=async()=>{
+        try{
+          const {data,error}=await sb.storage.from('retailer-pdfs').createSignedUrl(o.pdf_path,60);
+          if(error) throw error;
+          window.open(data.signedUrl,'_blank','noopener');
+        }catch(e){say(e.message||'PDF link তৈরি করা যায়নি।','error');}
+      };
+      card.append(btn);
+    }
+    $('orders').append(card);
+  }
+}
+async function placeOrder(serviceId){
+  try{
+    const {error}=await sb.rpc('place_order',{p_service_id:serviceId});
+    if(error) throw error;
+    say('Order সফলভাবে পাঠানো হয়েছে।','success');
+    await loadDash();
+  }catch(e){say(e.message||'Order করা যায়নি।','error');}
+}
+$('refresh').onclick=()=>loadDash().catch(e=>say(e.message,'error'));
+$('logout').onclick=async()=>{
+  try{await sb.auth.signOut();$('dash').classList.add('hidden');$('auth').classList.remove('hidden');say('Logout হয়েছে।','success');}
+  catch(e){say(e.message,'error');}
+};
+init();
 </script></body></html>
