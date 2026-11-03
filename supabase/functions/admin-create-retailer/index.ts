@@ -67,16 +67,30 @@ Deno.serve(async (req: Request) => {
       user_metadata: { full_name: fullName, phone: rawPhone },
     });
 
-    if (createError) {
-      const message = /already|registered|exists/i.test(createError.message)
+    if (createError || !created.user) {
+      const message = /already|registered|exists/i.test(createError?.message ?? "")
         ? "এই মোবাইল নম্বর দিয়ে Retailer আগে থেকেই তৈরি আছে।"
-        : "Retailer তৈরি করা যায়নি: " + createError.message;
+        : "Retailer তৈরি করা যায়নি: " + (createError?.message ?? "Unknown error");
       return json(400, { error: message });
+    }
+
+    // The auth.users trigger creates the matching profile and retailer_id.
+    const { data: savedProfile, error: saveError } = await admin
+      .from("profiles")
+      .update({ full_name: fullName, phone })
+      .eq("id", created.user.id)
+      .select("retailer_id")
+      .single();
+
+    if (saveError) {
+      await admin.auth.admin.deleteUser(created.user.id);
+      return json(500, { error: "Retailer profile save করা যায়নি: " + saveError.message });
     }
 
     return json(200, {
       success: true,
-      retailer_id: created.user?.id ?? null,
+      retailer_id: savedProfile.retailer_id,
+      phone,
       message: "Retailer account তৈরি হয়েছে।",
     });
   } catch (_error) {
