@@ -13,13 +13,6 @@
 </head>
 <body><div class="wrap">
 <header class="brand"><h1>MIRDDA TELICOM</h1><div>RETAILER PORTAL</div><p>বাঁকুড়দহ হসপিটাল বাজার</p></header>
-<section class="panel">
-<h3>প্রথমবার সেটআপ</h3>
-<p class="muted">Supabase Project URL এবং Publishable Key দিন। এগুলি এই ব্রাউজারে সেভ থাকবে। Secret বা service_role key ব্যবহার করবেন না।</p>
-<input id="url" placeholder="Supabase Project URL (https://....supabase.co)">
-<input id="key" placeholder="sb_publishable_...">
-<button id="saveConfig">Save & Connect</button><div id="configMsg" class="muted"></div>
-</section>
 <section id="auth" class="panel hidden">
 <div class="grid">
 <div><h2>নতুন Retailer Registration</h2>
@@ -122,24 +115,18 @@ function retailerLoginEmail(phone){ return phoneDigits(phone)+'@example.com'; }
 function init(){
   const url=localStorage.getItem('mt_supabase_url')||'';
   const key=localStorage.getItem('mt_supabase_key')||'';
-  $('url').value=url; $('key').value=key;
-  if(url && key){
-    sb=createClient(url,key);
+  if(!url || !key){
     $('auth').classList.remove('hidden');
-    $('configMsg').textContent='Supabase config এই ব্রাউজারে সেভ আছে।';
-    sb.auth.getSession().then(({data,error})=>{
-      if(error) return say(error.message,'error');
-      if(data.session) loadDash().catch(e=>say(e.message,'error'));
-    });
+    say('Portal configuration পাওয়া যায়নি। Admin-এর সঙ্গে যোগাযোগ করুন।','error');
+    return;
   }
+  sb=createClient(url,key);
+  $('auth').classList.remove('hidden');
+  sb.auth.getSession().then(({data,error})=>{
+    if(error) return say(error.message,'error');
+    if(data.session) loadDash().catch(e=>say(e.message,'error'));
+  });
 }
-$('saveConfig').onclick=()=>{
-  const url=$('url').value.trim(),key=$('key').value.trim();
-  if(!url.startsWith('https://')||!key){$('configMsg').textContent='সঠিক Project URL ও Publishable Key দিন।';return;}
-  localStorage.setItem('mt_supabase_url',url);
-  localStorage.setItem('mt_supabase_key',key);
-  init(); $('configMsg').textContent='Config সেভ হয়েছে। এখন Registration বা Login করুন।';
-};
 $('register').onclick=async()=>{
   try{
     if(!sb) throw new Error('আগে Supabase Connect করুন।');
