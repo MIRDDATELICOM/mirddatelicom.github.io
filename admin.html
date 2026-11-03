@@ -2,9 +2,156 @@
 <html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MIRDDA TELICOM Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f2f6fa;color:#193247;font-family:'Hind Siliguri',sans-serif}header{background:linear-gradient(120deg,#102a43,#1769aa);color:white;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.brand{font-size:22px;font-weight:700}.brand small{display:block;font-size:12px;font-weight:400;color:#d5eafa}a{color:#1769aa}.wrap{max-width:1200px;margin:auto;padding:24px 4%}.panel{background:white;border:1px solid #e0e8ef;border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 5px 20px #19324708}.hidden{display:none!important}h1{margin:0 0 5px;color:#102a43}h2{margin:0 0 14px;font-size:20px;color:#102a43}.muted{color:#6b7d8d;font-size:14px}.notice{background:#fff5dd;border:1px solid #f1d99b;border-radius:9px;padding:12px;margin:12px 0;line-height:1.5}.row{display:flex;gap:12px;flex-wrap:wrap;align-items:end}.field{flex:1;min-width:180px;margin:8px 0}.field label{display:block;font-size:14px;margin-bottom:5px}.field input{width:100%;padding:11px;border:1px solid #d6e0e8;border-radius:8px;font:14px inherit}.field input[type=file]{padding:7px}.btn{border:0;background:#1769aa;color:white;padding:10px 15px;border-radius:8px;font:600 14px 'Hind Siliguri';cursor:pointer}.btn.secondary{background:#eaf2f8;color:#174d78}.btn.danger{background:#a93232}.btn:disabled{opacity:.5;cursor:wait}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.tabs button{background:#e7eef4;color:#29485f}.tabs button.active{background:#1769aa;color:#fff}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:760px}th,td{text-align:left;padding:11px;border-bottom:1px solid #e8edf2;font-size:14px;vertical-align:middle}th{background:#f5f8fb;color:#52697c}.pill{display:inline-block;border-radius:30px;padding:3px 9px;font-size:12px;font-weight:700}.pending{background:#fff1d1;color:#8a5a00}.approved{background:#dff4e8;color:#146c3d}.rejected{background:#fde5e5;color:#9b2929}.orderactions{min-width:210px}.orderactions input{max-width:190px;font-size:12px;margin-bottom:6px}.msg{margin-top:12px;font-size:14px;white-space:pre-wrap}.ok{color:#137545}.err{color:#a93232}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stat{background:#f5f9fc;border-radius:10px;padding:14px}.stat strong{font-size:24px;display:block;color:#102a43}@media(max-width:650px){.stats{grid-template-columns:1fr 1fr}.wrap{padding:16px 3%}.panel{padding:15px}}
-</style></head><body>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#080d19;
+ color:#e8efff;
+ font-family:'Hind Siliguri',sans-serif;
+}
+header{
+ background:linear-gradient(120deg,#080d19,#111d38,#123c79);
+ color:#fff;
+ padding:20px 5%;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:12px;
+ flex-wrap:wrap;
+ border-bottom:1px solid #244b88;
+ box-shadow:0 5px 25px #0008;
+}
+.brand{font-size:24px;font-weight:700;color:#fff}
+.brand small{display:block;font-size:12px;font-weight:400;color:#9db9ee}
+a{color:#60a5fa}
+.wrap{max-width:1250px;margin:auto;padding:25px 4%}
+.panel{
+ background:linear-gradient(145deg,#131d32,#0d1526);
+ border:1px solid #253b60;
+ border-radius:18px;
+ padding:22px;
+ margin-bottom:20px;
+ box-shadow:0 8px 28px #0005;
+}
+.hidden{display:none!important}
+h1{margin:0 0 8px;color:#fff}
+h2{margin:0 0 15px;font-size:21px;color:#8dbaff}
+.muted{color:#9baac4;font-size:14px}
+.notice{
+ background:#302817;
+ border:1px solid #806020;
+ color:#ffe0a0;
+ border-radius:11px;
+ padding:13px;
+ margin:12px 0;
+ line-height:1.5;
+}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:end}
+.field{flex:1;min-width:180px;margin:8px 0}
+.field label{display:block;font-size:14px;margin-bottom:6px;color:#c9d8f5}
+.field input{
+ width:100%;
+ padding:12px;
+ background:#080f20;
+ color:#fff;
+ border:1px solid #30466c;
+ border-radius:9px;
+ font:14px inherit;
+ outline:none;
+}
+.field input:focus{
+ border-color:#398bff;
+ box-shadow:0 0 0 3px #247bff25;
+}
+.field input[type=file]{padding:8px}
+.btn{
+ border:1px solid #398bff;
+ background:linear-gradient(120deg,#1769df,#315dff);
+ color:white;
+ padding:11px 17px;
+ border-radius:9px;
+ font:600 14px 'Hind Siliguri';
+ cursor:pointer;
+ transition:.2s;
+}
+.btn:hover{filter:brightness(1.18);transform:translateY(-1px)}
+.btn.secondary{
+ background:#172743;
+ color:#a9ccff;
+ border-color:#35517d;
+}
+.btn.danger{
+ background:linear-gradient(120deg,#a52b43,#e04454);
+ border-color:#e04454;
+}
+.btn:disabled{opacity:.5;cursor:wait}
+.tabs{display:flex;gap:9px;flex-wrap:wrap;margin:20px 0}
+.tabs button{
+ background:#17243b;
+ color:#a9bddc;
+ border:1px solid #2c4164;
+}
+.tabs button.active{
+ background:linear-gradient(120deg,#1769df,#315dff);
+ color:#fff;
+ border-color:#398bff;
+ box-shadow:0 4px 15px #1769df55;
+}
+.tablewrap{overflow:auto;border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:760px}
+th,td{
+ text-align:left;
+ padding:13px;
+ border-bottom:1px solid #263651;
+ font-size:14px;
+ vertical-align:middle;
+ color:#dce7fa;
+}
+th{background:#17243b;color:#8dbaff}
+tr:hover td{background:#17243b55}
+.pill{
+ display:inline-block;
+ border-radius:30px;
+ padding:4px 10px;
+ font-size:12px;
+ font-weight:700;
+}
+.pending{background:#493719;color:#ffd47a}
+.approved{background:#123c31;color:#65e3ae}
+.rejected{background:#4a202b;color:#ff9aaa}
+.orderactions{min-width:210px}
+.orderactions input{
+ max-width:190px;
+ font-size:12px;
+ margin-bottom:6px;
+ background:#080f20;
+ color:white;
+ border:1px solid #30466c;
+ border-radius:7px;
+ padding:9px;
+}
+.msg{margin-top:12px;font-size:14px;white-space:pre-wrap}
+.ok{color:#5ce0a0}
+.err{color:#ff7e8c}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.stat{
+ background:linear-gradient(145deg,#172b4d,#101b30);
+ border:1px solid #294d7d;
+ border-radius:14px;
+ padding:17px;
+ box-shadow:0 5px 18px #0004;
+}
+.stat strong{font-size:27px;display:block;color:#65a8ff}
+@media(max-width:650px){
+ .stats{grid-template-columns:1fr 1fr}
+ .wrap{padding:16px 3%}
+ .panel{padding:15px}
+ .brand{font-size:21px}
+}
+</style>
+/head><body>
 <header><div class="brand">MIRDDA TELICOM <small>Retailer Portal · Secure Admin</small></div><a href="index.html" style="color:white">মূল Website</a></header>
 <div class="wrap">
 <div id="config" class="panel"><h1>প্রথমবার Supabase সংযোগ</h1><p class="muted">Supabase Project URL এবং anon/public key বসান। এগুলো public client config; কখনো service_role key দেবেন না।</p>
