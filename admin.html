@@ -171,7 +171,7 @@ tr:hover td{background:#17243b55}
 </div>
 <script>
 (() => {
- const $=id=>document.getElementById(id); let client=null;
+ const $=id=>document.getElementById(id); let client=null<div id="servicerows" class="service-grid"></div>
  const say=(id,msg,kind='')=>{$(id).textContent=msg;$(id).className='msg '+kind};
  const show=(id,on)=>$(id).classList.toggle('hidden',!on);
  const init=async()=>{
