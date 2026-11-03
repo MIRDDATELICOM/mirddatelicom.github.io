@@ -171,9 +171,10 @@ async function loadDash(){
   if(authError) throw authError;
   if(!user) return;
   const {data:p,error:profileError}=await sb.from('profiles')
-    .select('retailer_id,full_name,phone,wallet_balance,role').eq('id',user.id).single();
+    .select('retailer_id,full_name,phone,wallet_balance,role,active').eq('id',user.id).single();
   if(profileError) throw new Error('Profile পাওয়া যায়নি। Supabase profile trigger ও table policy পরীক্ষা করুন। ('+profileError.message+')');
   if(p.role==='admin') throw new Error('এই অ্যাকাউন্টটি Admin। Retailer Portal-এ Retailer account দিয়ে Login করুন।');
+  if(p.active===false){await sb.auth.signOut();$('dash').classList.add('hidden');$('auth').classList.remove('hidden');throw new Error('আপনার Retailer Account Admin দ্বারা Block করা হয়েছে। Admin-এর সঙ্গে যোগাযোগ করুন।');}
   $('auth').classList.add('hidden');$('dash').classList.remove('hidden');
   $('retailerId').textContent=p.retailer_id||'—';
   $('retailerName').textContent=p.full_name||'—';$('profileName').textContent=p.full_name||'—';
