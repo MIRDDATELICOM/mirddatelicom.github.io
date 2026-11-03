@@ -19,7 +19,7 @@
 <section id="tab-orders" class="panel"><div class="row" style="justify-content:space-between"><h2>Order Management</h2><button class="btn secondary" id="refreshorders">Refresh</button></div><div class="tablewrap"><table><thead><tr><th>Order</th><th>Retailer</th><th>Service</th><th>Amount</th><th>Status</th><th>তারিখ</th><th>PDF / Action</th></tr></thead><tbody id="orderrows"><tr><td colspan="7">Loading…</td></tr></tbody></table></div></section>
 <section id="tab-retailers" class="panel hidden"><div class="row" style="justify-content:space-between"><h2>Retailer & Wallet</h2><button class="btn secondary" id="refreshretailers">Refresh</button></div><div class="panel" style="background:#f7fafc;margin:12px 0"><h2>নতুন Retailer তৈরি করুন</h2><p class="muted">Admin-created account. মোবাইল নম্বর ও Password Retailer-কে নিরাপদে জানিয়ে দিন।</p><div class="row"><div class="field"><label>Retailer-এর নাম</label><input id="newretailername" maxlength="80" placeholder="সম্পূর্ণ নাম"></div><div class="field"><label>মোবাইল নম্বর</label><input id="newretailerphone" inputmode="numeric" maxlength="14" placeholder="10 digit mobile"></div><div class="field"><label>অস্থায়ী Password (কমপক্ষে ৮ অক্ষর)</label><input id="newretailerpass" type="password" minlength="8" autocomplete="new-password" placeholder="নতুন Password"></div><button class="btn" id="createretailer">Create Retailer</button></div><div id="createretailermsg" class="msg"></div></div><div class="tablewrap"><table><thead><tr><th>Retailer ID</th><th>নাম</th><th>Phone</th><th>Wallet Balance</th><th>Status</th><th>Management</th><th>Demo Add</th><th>Joined</th></tr></thead><tbody id="retailerrows"></tbody></table></div><p class="muted">Demo Add শুধু স্ক্রিনে পরীক্ষার জন্য। এটি Database বা আসল Wallet-এ টাকা যোগ করে না; পেজ Refresh করলে Demo amount মুছে যাবে।</p></section>
 <section id="tab-wallet" class="panel hidden"><div class="row" style="justify-content:space-between"><h2>Wallet Recharge Requests</h2><button class="btn secondary" id="refreshwallet">Refresh</button></div><div class="tablewrap"><table><thead><tr><th>Retailer</th><th>Amount</th><th>Note</th><th>Date</th><th>Status</th><th>Action</th></tr></thead><tbody id="walletrows"><tr><td colspan="6">Loading…</td></tr></tbody></table></div></section>
-<section id="tab-services" class="panel hidden"><h2>Service List</h2><div class="row"><div class="field"><label>Service Name</label><input id="servicename" placeholder="যেমন: Voter Card PDF"></div><div class="field"><label>Price (₹)</label><input id="serviceprice" type="number" min="1" step=".01" placeholder="30"></div><button class="btn" id="addservice">Add Service</button></div><div class="tablewrap"><table><thead><tr><th>Service</th><th>Price</th><th>Status</th></tr></thead><tbody id="servicerows"></tbody></table></div></section>
+<section id="tab-services" class="panel hidden"><h2>Service Management</h2><p class="muted">ছবি আপলোড করলে Retailer Panel-এও সেই ছবি দেখা যাবে।</p><div class="row"><div class="field"><label>Service Name</label><input id="servicename" placeholder="যেমন: Voter Card PDF"></div><div class="field"><label>Price (₹)</label><input id="serviceprice" type="number" min="1" step=".01" placeholder="30"></div><div class="field"><label>Service Image (কম্পিউটার থেকে)</label><input id="serviceimage" type="file" accept="image/png,image/jpeg,image/webp"></div><button class="btn" id="addservice">Add Service</button></div><div class="tablewrap"><table><thead><tr><th>ছবি</th><th>Service</th><th>Price</th><th>Status</th><th>ছবি পরিবর্তন</th></tr></thead><tbody id="servicerows"></tbody></table></div></section>
 <div id="appmsg" class="msg"></div></div>
 </div>
 <script>
@@ -85,8 +85,38 @@ async function reviewWallet(id,status){
   say('appmsg',status==='approved'?'Recharge approved; Wallet credited.':'Recharge request rejected.','ok');
   await loadWalletRequests();await loadRetailers();
 }
-async function loadServices(){const {data,error}=await client.from('services').select('name,price,active').order('name');if(error){say('appmsg',error.message,'err');return}$('servicerows').innerHTML=data.map(s=>'<tr><td>'+esc(s.name)+'</td><td>₹'+Number(s.price).toFixed(2)+'</td><td>'+(s.active?'Active':'Inactive')+'</td></tr>').join('')}
- $('addservice').onclick=async()=>{const name=$('servicename').value.trim(),price=Number($('serviceprice').value);if(!name||!Number.isFinite(price)||price<=0){say('appmsg','Service name ও সঠিক price দিন।','err');return}const {error}=await client.from('services').insert({name,price});if(error){say('appmsg',error.message,'err');return}$('servicename').value='';$('serviceprice').value='';say('appmsg','Service যোগ হয়েছে।','ok');loadServices()};
+async function uploadServiceImage(file,serviceId){
+  if(!file)return null;
+  if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024)throw new Error('JPG, PNG বা WEBP ছবি দিন (সর্বোচ্চ 5 MB)।');
+  const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';
+  const path=(serviceId||'new')+'/'+Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;
+  const {error}=await client.storage.from('service-images').upload(path,file,{contentType:file.type,upsert:false});
+  if(error)throw error;
+  const {data}=client.storage.from('service-images').getPublicUrl(path);
+  return data.publicUrl;
+}
+async function loadServices(){
+  const {data,error}=await client.from('services').select('id,name,price,active,image_url').order('name');
+  if(error){say('appmsg',error.message,'err');return}
+  $('servicerows').innerHTML=(data||[]).map(s=>'<tr><td>'+(s.image_url?'<img src="'+esc(s.image_url)+'" alt="" style="width:64px;height:52px;object-fit:cover;border-radius:8px">':'—')+'</td><td>'+esc(s.name)+'</td><td>₹'+Number(s.price).toFixed(2)+'</td><td>'+(s.active?'Active':'Inactive')+'</td><td><input type="file" accept="image/png,image/jpeg,image/webp" id="serviceimg-'+s.id+'" style="max-width:180px"><button class="btn secondary" data-service-image="'+s.id+'">Upload</button></td></tr>').join('');
+  document.querySelectorAll('[data-service-image]').forEach(b=>b.onclick=()=>updateServiceImage(b.dataset.serviceImage));
+}
+async function updateServiceImage(id){
+  const file=$('serviceimg-'+id)?.files?.[0];if(!file){say('appmsg','প্রথমে ছবি নির্বাচন করুন।','err');return}
+  try{say('appmsg','ছবি আপলোড হচ্ছে…');const url=await uploadServiceImage(file,id);const {error}=await client.from('services').update({image_url:url}).eq('id',id);if(error)throw error;say('appmsg','Service-এর ছবি আপডেট হয়েছে। Retailer Panel-এও দেখা যাবে।','ok');await loadServices()}catch(e){say('appmsg',e.message||'ছবি আপলোড হয়নি।','err')}
+}
+$('addservice').onclick=async()=>{
+  const name=$('servicename').value.trim(),price=Number($('serviceprice').value),file=$('serviceimage').files?.[0];
+  if(!name||!Number.isFinite(price)||price<=0){say('appmsg','Service name ও সঠিক price দিন।','err');return}
+  try{
+    say('appmsg','Service যোগ হচ্ছে…');
+    const {data,error}=await client.from('services').insert({name,price}).select('id').single();
+    if(error)throw error;
+    if(file){const url=await uploadServiceImage(file,data.id);const {error:updateError}=await client.from('services').update({image_url:url}).eq('id',data.id);if(updateError)throw updateError}
+    $('servicename').value='';$('serviceprice').value='';$('serviceimage').value='';
+    say('appmsg','Service যোগ হয়েছে। Retailer Panel-এ আপডেট হবে।','ok');await loadServices();
+  }catch(e){say('appmsg',e.message||'Service যোগ হয়নি।','err')}
+};
  function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
  init();
 })();
