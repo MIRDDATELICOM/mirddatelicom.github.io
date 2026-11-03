@@ -75,8 +75,16 @@
       <div class="wallet-card" id="walletPanel">
         <h3>▣ &nbsp; Wallet Balance</h3><small>Available balance</small>
         <div class="amount" id="balance">₹0.00</div>
-        <button id="walletContact" type="button">＋ Add Money</button>
-        <p class="muted" style="margin:10px 0 0">Wallet recharge-এর জন্য Admin-এর সঙ্গে যোগাযোগ করুন।</p>
+        <div style="margin-top:12px">
+          <label for="rechargeAmount"><b>Recharge Amount (₹)</b></label>
+          <input id="rechargeAmount" type="number" min="1" max="100000" step="0.01" placeholder="টাকার পরিমাণ লিখুন">
+          <label for="rechargeNote"><b>Payment Note / Transaction ID (ঐচ্ছিক)</b></label>
+          <input id="rechargeNote" type="text" maxlength="250" placeholder="Payment details লিখুন">
+          <button id="sendRecharge" type="button">Recharge Request পাঠান</button>
+          <p class="muted">Request পাঠানোর পর Admin payment যাচাই করে approve করবেন।</p>
+          <h4>আমার Recharge Requests</h4>
+          <div id="rechargeRequests" class="muted">লোড হচ্ছে...</div>
+        </div>
       </div>
       <div class="quick-card">
         <h3>⚡ &nbsp; Quick Actions</h3>
@@ -170,6 +178,7 @@ async function loadDash(){
   $('retailerId').textContent=p.retailer_id||'—';
   $('retailerName').textContent=p.full_name||'—';$('profileName').textContent=p.full_name||'—';
   $('balance').textContent='₹'+Number(p.wallet_balance||0).toFixed(2);
+  await loadRechargeRequests();
   const {data:services,error:serviceError}=await sb.from('services')
     .select('id,name,price').eq('active',true).order('name');
   if(serviceError) throw serviceError;
@@ -214,8 +223,40 @@ async function placeOrder(serviceId){
     await loadDash();
   }catch(e){say(e.message||'Order করা যায়নি।','error');}
 }
+async function loadRechargeRequests(){
+  const box=$('rechargeRequests');
+  const {data,error}=await sb.from('wallet_recharge_requests')
+    .select('id,amount,note,status,admin_note,created_at,reviewed_at')
+    .order('created_at',{ascending:false}).limit(20);
+  if(error) throw error;
+  box.innerHTML='';
+  if(!data||!data.length){box.textContent='এখনও কোনো Recharge Request পাঠানো হয়নি।';return;}
+  const labels={pending:'অপেক্ষমাণ',approved:'অনুমোদিত',rejected:'বাতিল'};
+  for(const r of data){
+    const item=document.createElement('div');
+    item.style.cssText='padding:10px;margin:8px 0;border:1px solid #dce5ef;border-radius:10px;background:#f8faff';
+    const heading=document.createElement('b');
+    heading.textContent='₹'+Number(r.amount).toFixed(2)+' • '+(labels[r.status]||r.status);
+    const details=document.createElement('div');
+    details.className='muted';
+    details.textContent=(r.created_at?new Date(r.created_at).toLocaleString('en-IN'):'')+(r.note?' • '+r.note:'')+(r.admin_note?' • Admin: '+r.admin_note:'');
+    item.append(heading,details);box.append(item);
+  }
+}
 $('refresh').onclick=()=>loadDash().catch(e=>say(e.message,'error'));
-$('walletContact').onclick=()=>{say('Wallet recharge-এর জন্য Admin-এর সঙ্গে যোগাযোগ করুন: 8910703578','success');};
+$('sendRecharge').onclick=async()=>{
+  try{
+    const amount=Number($('rechargeAmount').value);
+    const note=$('rechargeNote').value.trim();
+    if(!Number.isFinite(amount)||amount<1||amount>100000) throw new Error('₹1 থেকে ₹1,00,000-এর মধ্যে সঠিক Amount লিখুন।');
+    say('Recharge Request পাঠানো হচ্ছে...');
+    const {error}=await sb.rpc('request_wallet_recharge',{p_amount:amount,p_note:note||null});
+    if(error) throw error;
+    $('rechargeAmount').value='';$('rechargeNote').value='';
+    await loadRechargeRequests();
+    say('Recharge Request সফলভাবে পাঠানো হয়েছে। Admin যাচাই করে approve করবেন।','success');
+  }catch(e){say(e.message||'Recharge Request পাঠানো যায়নি।','error');}
+};
 $('logout').onclick=async()=>{
   try{await sb.auth.signOut();$('dash').classList.add('hidden');$('auth').classList.remove('hidden');say('Logout হয়েছে।','success');}
   catch(e){say(e.message,'error');}
